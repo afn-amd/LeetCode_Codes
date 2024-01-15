@@ -26,30 +26,19 @@ Thus, answer[0] = [1,2,5,6] and answer[1] = [].
 ______________________________________________________________________________________________________________________________________________________________________________________________________________________
 
 class Solution(object):
-    def findNotLost(self, player, matches):
-        for i in range(0, len(matches)):
-            if matches[i][1] == player:
-                return 0
-        return 1
-
-    def findLostOne(self, player, matches, match):
-        for i in range(0, len(matches)):
-            if i != match:
-                if matches[i][1] == player:
-                    return 0
-        return 1
-
     def findWinners(self, matches):
-        playersNotLost = []
-        playersLostOne = []
-        for i in range(0, len(matches)):
-            if matches[i][0] not in playersNotLost:
-                if self.findNotLost(matches[i][0], matches) == 1:
-                    playersNotLost.append(matches[i][0])
-        playersNotLost.sort()
-        for i in range(0, len(matches)):
-            if self.findLostOne(matches[i][1], matches, i) == 1:
-                playersLostOne.append(matches[i][1])
-        playersLostOne.sort()
-        answer = [playersNotLost, playersLostOne]
-        return answer
+        wins = {}
+        losses = {}
+
+        for match in matches:
+            winner, loser = match
+            wins[winner] = wins.get(winner, 0) + 1
+            losses[loser] = losses.get(loser, 0) + 1
+
+        not_lost_any = [player for player, win_count in wins.items() if win_count > 0 and player not in losses]
+        lost_one = [player for player, loss_count in losses.items() if loss_count == 1]
+
+        not_lost_any.sort()
+        lost_one.sort()
+
+        return [not_lost_any, lost_one]
